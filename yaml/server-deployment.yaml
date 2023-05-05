@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server-tracing
+  labels:
+    app: tracing-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tracing-demo
+  template:
+    metadata:
+      labels:
+        app: tracing-demo
+    spec:
+      containers:
+      - env:
+        - name: OTEL_TRACES_EXPORTER
+          value: "otlp"
+        - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          value: "http://172.20.76.159:4317"
+        - name: OTEL_RESOURCE_ATTRIBUTES
+          value: "service.name=server"
+        - name: OTEL_METRICS_EXPORTER
+          value: ""
+        - name: OTEL_PYTHON_LOG_CORRELATION
+          value: "true"
+        - name: OTEL_PYTHON_LOG_FORMAT
+          value: "%(asctime)s %(levelname)s [%(name)s] [%(filename)s:%(lineno)d] [trace_id=%(otelTraceID)s] - %(message)s"
+        - name: OTEL_PYTHON_LOG_LEVEL
+          value: "info"
+        name: server
+        image: justintai/demo-tracing
+        ports:
+        - containerPort: 8082

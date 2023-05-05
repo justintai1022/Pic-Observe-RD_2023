@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: otlp-client-demo-pod
+  labels:
+    app: tracing-demo
+spec:
+  schedule: "*/5 * * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - image: justintai/demo-tracing-client
+            name: instrumented-client
+            command:
+            - /bin/sh
+            - -c
+            - opentelemetry-instrument --traces_exporter otlp python3 client.py justin
+            env:
+            - name: OTEL_TRACES_EXPORTER
+              value: "otlp"
+            - name: OTEL_EXPORTER_OTLP_ENDPOINT
+              value: "http://172.20.76.159:4317"
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: "service.name=client"
+            - name: OTEL_METRICS_EXPORTER
+              value: ""
+            - name: OTEL_PYTHON_LOG_CORRELATION
+              value: "true"
+            - name: OTEL_PYTHON_LOG_FORMAT
+              value: "%(asctime)s %(levelname)s [%(name)s] [%(filename)s:%(lineno)d] [trace_id=%(otelTraceID)s] - %(message)s"
+            - name: OTEL_PYTHON_LOG_LEVEL
+              value: "info"
+          restartPolicy: OnFailure

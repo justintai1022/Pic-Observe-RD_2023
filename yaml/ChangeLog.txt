@@ -1,0 +1,1 @@
+1．client-pod.yaml改用K8S中的CronJob的方式，讓這個POD每五鐘執行一次
