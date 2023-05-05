@@ -712,7 +712,7 @@ grafana.ini:
     enabled: true
     host: smtp.gmail.com:465
     user: pic.justin1022@gmail.com
-    password: pjwpzwnwdktfsxgm
+    password: sssss
     cert_file:
     key_file:
     skip_verify: true
